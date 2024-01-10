@@ -1,25 +1,64 @@
 import './App.css';
 import React, { useState } from 'react';
+import MultiLevelSelect from './components/MultiLevelSelect';
+import LineGraph from './components/LineGraph.js';
 import CsvTable from './components/CsvTable.js';
 import CsvReader from './components/CsvReader.js';
 import Papa from 'papaparse';
+
 function App() {
-  const [data, setData] = useState([]);
+  const [csvData, setCsvData] = useState([]);
+  const [selectedSerialNumber, setSelectedSerialNumber] = useState(null);
+  const [selectedStationNumber, setSelectedStationNumber] = useState(null);
+  const [selectedTagName, setSelectedTagName] = useState(null);
+
+  // 以 papaparse 解析上傳的.csv檔案
   const handleFileUpload = (file) => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        setData(results.data);
+        setCsvData(results.data);
       },
     });
   };
+
   return (
     <div className='App'>
       <header className='App-header'>
-        <h1>React 網頁讀取 CSV 格式檔案</h1>
+        <p className='title'>React 網頁讀取 CSV 格式檔案</p>
       </header>
       <CsvReader onFileUpload={handleFileUpload} />
-      <CsvTable data={data} />
+      <div className='select-chart-container'>
+        <div className='select-area'>
+          <MultiLevelSelect
+            options={csvData}
+            handleSelectChange={setSelectedSerialNumber}
+            filterKey='serial_number'
+            listName='產品序號列表'
+          />
+          <MultiLevelSelect
+            options={csvData.filter(
+              (item) => item.serial_number === selectedSerialNumber
+            )}
+            handleSelectChange={setSelectedStationNumber}
+            filterKey='station_number'
+            listName='機器站點列表'
+          />
+          <MultiLevelSelect
+            options={csvData.filter(
+              (item) => item.station_number === selectedStationNumber
+            )}
+            handleSelectChange={setSelectedTagName}
+            filterKey='tag_name'
+            listName='TAG 列表'
+          />
+        </div>
+        <LineGraph
+          data={csvData.filter((item) => item.tag_name === selectedTagName)}
+        />
+      </div>
+      <label className='sub-title'>CSV輸出表格 : 點擊欄目可以調整排序</label>
+      <CsvTable data={csvData} />
     </div>
   );
 }
