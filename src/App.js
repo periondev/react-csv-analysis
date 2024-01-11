@@ -5,6 +5,7 @@ import LineGraph from './components/LineGraph.js';
 import CsvTable from './components/CsvTable.js';
 import CsvReader from './components/CsvReader.js';
 import Papa from 'papaparse';
+import moment from 'moment';
 
 function App() {
   const [csvData, setCsvData] = useState([]);
@@ -21,6 +22,30 @@ function App() {
       },
     });
   };
+
+  // 篩選並排序資料
+  const filterAndSortData = (serialNumber, stationNumber, tagName) => {
+    const filteredData = csvData.filter(
+      (item) =>
+        item.serial_number === serialNumber &&
+        item.station_number === stationNumber &&
+        item.tag_name === tagName
+    );
+
+    const sortedData = filteredData.sort(
+      (a, b) =>
+        moment(a.tag_created_at, 'YYYY-MM-DD HH:mm:ss').toDate() -
+        moment(b.tag_created_at, 'YYYY-MM-DD HH:mm:ss').toDate()
+    );
+
+    return sortedData;
+  };
+
+  const filteredAndSortedData = filterAndSortData(
+    selectedSerialNumber,
+    selectedStationNumber,
+    selectedTagName
+  );
 
   return (
     <div className='App'>
@@ -53,9 +78,7 @@ function App() {
             listName='TAG 列表'
           />
         </div>
-        <LineGraph
-          data={csvData.filter((item) => item.tag_name === selectedTagName)}
-        />
+        <LineGraph data={filteredAndSortedData} />
       </div>
       <label className='sub-title'>CSV輸出表格 : 點擊欄目可以調整排序</label>
       <CsvTable data={csvData} />
