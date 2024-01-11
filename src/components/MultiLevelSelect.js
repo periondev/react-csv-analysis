@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
+
 const MultiLevelSelect = ({
   options,
   handleSelectChange,
   filterKey,
   listName,
 }) => {
+  // 設定選取樣式
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  // 列表選取操作
+  const handleItemClick = (value) => {
+    setSelectedOption(value);
+    handleSelectChange(value);
+  };
+
+  // 過濾列表重複選項
   const uniqueOptions = Array.from(
     new Set(options.map((item) => item[filterKey]))
   ).map((option) => ({
@@ -13,22 +24,28 @@ const MultiLevelSelect = ({
     label: option,
   }));
 
-  const ListItem = ({ index }) => (
-    <option onClick={() => handleSelectChange(uniqueOptions[index].value)}>
+  // 列表選項
+  const Row = ({ index }) => (
+    <div
+      className={`list-item ${
+        uniqueOptions[index].value === selectedOption ? 'selected' : ''
+      }`}
+      onClick={() => handleItemClick(uniqueOptions[index].value)}
+    >
       {uniqueOptions[index].label}
-    </option>
+    </div>
   );
 
   return (
     <div className='list-container'>
-      <label>{listName}</label>
+      <label className='list-label'>{listName}</label>
       <List
-        height={150}
+        height={376}
         itemCount={uniqueOptions.length}
         itemSize={35}
-        width={300}
+        width={100}
       >
-        {ListItem}
+        {Row}
       </List>
     </div>
   );
