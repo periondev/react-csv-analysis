@@ -51,8 +51,8 @@ const CsvTable = (props) => {
                     <span>
                       {column.isSorted
                         ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
+                          ? '🔼'
+                          : '🔽'
                         : ''}
                     </span>
                   </th>

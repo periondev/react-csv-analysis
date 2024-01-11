@@ -14,7 +14,7 @@ const CsvReader = (props) => {
 
   return (
     <div>
-      <Form.Group controlId='formFile' className='mx-3'>
+      <Form.Group controlId='formFile' className='mb-3'>
         <Form.Label>選擇CSV格式檔案</Form.Label>
         <Form.Control type='file' accept='.csv' onChange={handleFileInput} />
       </Form.Group>
