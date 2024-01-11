@@ -12,10 +12,14 @@ import {
 
 const LineGraph = ({ data }) => {
   return (
-    <ResponsiveContainer width='60%' height={400}>
-      <label className='sub-title'>CSV輸出折線圖</label>
+    <ResponsiveContainer width='85%' height={400}>
+      <p className='sub-title'>CSV輸出折線圖</p>
       <LineChart data={data}>
-        <XAxis dataKey='tag_times' type='category' />
+        <XAxis
+          dataKey='tag_created_at'
+          type='category'
+          domain={['dataMin', 'dataMax']}
+        />
         <YAxis />
         <CartesianGrid strokeDasharray='3 3' />
         <Tooltip />
@@ -23,7 +27,7 @@ const LineGraph = ({ data }) => {
         <Line
           type='monotone'
           dataKey='tag_value'
-          stroke='#8884d8'
+          stroke='#2563eb'
           activeDot={{ r: 8 }}
         />
       </LineChart>
